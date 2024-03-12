@@ -16,7 +16,7 @@ class ImageUpload extends Model
     public function getPhotoAttribute(): string
     {
         return Str::startsWith($this->image, 'http') ? $this->image : Storage::url($this->image); // zapis zdjęć w storage
-        //return 'uploads/' . $this->image; // zapis zdjęć w katalogu public
+        //return 'uploads/' . $this->image; // zapis zdjęć w katalogu public v
     }
 }
 
