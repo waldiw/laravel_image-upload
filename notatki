@@ -1,0 +1,21 @@
+instalacja w ubuntu GD
+sudo apt install php-gd
+
+w xampp w pliku php.ini odznaczyć extension:gd
+
+add extension in composer.json i po najechaniu na imagecreatefromjpeg można dodać automatycznie
+
+$source = imagecreatefromjpeg('../public/storage/' . $imagePath);
+        list($width, $height) = getimagesize('../public/storage/' . $imagePath);
+        //dd($width, $height); // wysokość 130 px
+        $newWidth = 100;
+        $newHeight = 100;
+
+// Create a new image
+        $thumb = imagecreatetruecolor($newWidth, $newHeight);
+
+// Resize
+        imagecopyresized($thumb, $source, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+// Save the resized image
+        imagejpeg($thumb, '../public/storage/' . $imagePath, 100);

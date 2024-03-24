@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ImageUpload;
-use Session;
+use Illuminate\Support\Facades\Session;
 
 class ImageUploadController extends Controller
 {
@@ -31,8 +30,36 @@ class ImageUploadController extends Controller
         ImageUpload::create([
             'image'=>$imagePath,
         ]);
-        Session::flash('message', 'New image added success.'); 
-        Session::flash('alert-class', 'alert-success'); 
+
+        // image to resize
+        $source = imagecreatefromjpeg('../public/storage/' . $imagePath);
+        // read size
+        list($width, $height) = getimagesize('../public/storage/' . $imagePath);
+
+        $thumb_width = (int)((130 / $height) * $width);
+        if($thumb_width > 160)
+        {
+            $tumbHeight = (int)((160 / $width) * $height);
+            $thumb_width = 160;
+        }
+        else
+        {
+            $tumbHeight = 130;
+        }
+        // new size
+        $newWidth = $thumb_width;
+        $newHeight = $tumbHeight;
+        // Create a new image
+        $thumb = imagecreatetruecolor($newWidth, $newHeight);
+        // Resize
+        imagecopyresized($thumb, $source, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+        // Save the resized image
+        imagejpeg($thumb, '../public/storage/' . $imagePath, 100);
+        // Clear the memory of the tempory image
+        ImageDestroy($thumb);
+
+        Session::flash('message', 'New image added success.');
+        Session::flash('alert-class', 'alert-success');
         return redirect()->back();
     }
 
